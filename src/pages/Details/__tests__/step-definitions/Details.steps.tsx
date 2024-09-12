@@ -11,6 +11,11 @@ const mockedProps = {
     stats: [{ stat: { name: "speed" }, base_stat: 45 }],
 };
 
+interface IDataErr {
+  loading: boolean;
+  error: string;
+}
+
 const feature = loadFeature(
  "./src/pages/Details/__tests__/features/Details-scenario.feature"
 );
@@ -20,6 +25,7 @@ defineFeature(feature, (test) => {
  let DetailsViewErrorWrapper: ShallowWrapper;
  let mockFetch: jest.Mock;
  let mockFetchError: jest.Mock;
+ let dataError: IDataErr;
 
  beforeEach(() => {
   jest.resetModules();
@@ -44,7 +50,7 @@ defineFeature(feature, (test) => {
   when("the user requests Pokémon data from the API", async () => {
     const response = await fetch("https://pokeapi.co/api/v2/pokemon/1");
     const data = await response.json();
-
+    
     DetailsViewWrapper = shallow(<DetailsView {...data} />);
   });
 
@@ -78,7 +84,7 @@ defineFeature(feature, (test) => {
 
  test("User views Pokémon details and API fails", ({ given, when, then }) => {
   given("I am on the DetailsView page with error data", () => {
-    const mockResponse = {
+    const mockResponseError = {
       ok: false,
       status: 404,
       statusText: "Not Found",
@@ -86,30 +92,30 @@ defineFeature(feature, (test) => {
         get: () => "application/json",
       },
       json: () => Promise.resolve({ error: "Error: Pokémon not found.", loading: false }),
-
     };
 
-    mockFetchError = jest.fn(() => Promise.resolve(mockResponse as any));
+    mockFetchError = jest.fn(() => mockResponseError as any);
     global.fetch = mockFetchError;
   });
 
   when("the user requests Pokémon data from the API", async () => {
-    let data;
     try {
       const response = await fetch("https://pokeapi.co/api/v2/pokemon/9999"); 
-      data = await response.json();
+      dataError = await response.json();
     } catch (error) {
-      data = { error: "Error: Pokémon not found.", loading: false }
+      dataError = { error: "Error: Pokémon not found.", loading: false }
     }
-    console.log(data, "Asdasdasdashdklasss")
-    DetailsViewErrorWrapper = shallow(<DetailsView {...data} />);
+    
+    DetailsViewErrorWrapper = shallow(<DetailsView {...dataError} />);
     DetailsViewErrorWrapper.setState({ loading: false, error: "Error: Pokémon not found." }); 
   });
 
   then("User will see an error message", () => {
     const errorMessage = DetailsViewErrorWrapper.find(".error-message").first();
-    console.log(DetailsViewErrorWrapper.debug() ,errorMessage.debug())
+    console.log(DetailsViewErrorWrapper.debug() , errorMessage.debug(), "POKEMONNNNNNNN")
     expect(errorMessage.text()).toBe("Error: Pokémon not found.");
+    // expect(dataError.loading).toBe(false)
+    expect(dataError.error).toBe("Error: Pokémon not found.")
   });
 });
 });

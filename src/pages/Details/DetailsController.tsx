@@ -27,8 +27,8 @@ export default class DetailsController extends React.Component {
    });
   } catch (error) {
     this.setState({
-    error: "Error: Pokémon not found.",
-    loading: false,
+        error: "Error: Pokémon not found.",
+        loading: false,
     });
   }
  }
