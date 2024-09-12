@@ -97,7 +97,6 @@ class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
 
   return (
    <Container>
-    {this.state.lists.length > 0 && (
      <Autocomplete
       id="combo-box-demo"
       options={this.state.searchResults}
@@ -127,7 +126,6 @@ class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
        />
       )}
      />
-    )}
    </Container>
   );
  }

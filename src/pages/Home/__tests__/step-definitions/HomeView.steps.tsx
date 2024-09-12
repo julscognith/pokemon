@@ -6,6 +6,8 @@ import HomeView from "../../HomeView";
 import "../../../../__mocks__/intersectionObserverMock";
 import { MemoryRouter } from "react-router-dom";
 import PokemonCard from "../../../../components/PokemonCard";
+import { Autocomplete } from "@material-ui/lab";
+import { Search } from "../../../../components";
 
 const mockedProps = {};
 
@@ -105,6 +107,22 @@ defineFeature(feature, (test) => {
   });
 
   then("I should see a load more button", async () => {
+
+    const w = mount(<Search />)
+    let input  = w.find("#myinput");
+    console.log(input.debug(), "DEBUGGGGss")
+    input.simulate("focus");
+    input.simulate("change", { target: { value: "test run 123" } })
+    input.update()
+    
+    input  = w.find("#myinput");
+    expect(input.props().value).toEqual("test run 123")
+
+    console.log(input.debug(), "DEBUGGGGss")
+    // expect(wrapper.find(Search).instance().state.searchResults).toContainEqual(
+    //     expect.objectContaining({ name: 'test run 123' })
+    //   );
+
    const loadMore = wrapper.find("#loadmore").first();
    expect(loadMore.text()).toContain("Load More");
   });
