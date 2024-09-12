@@ -18,7 +18,10 @@ class DetailsView extends DetailsController {
  render() {
   return (
    <Container>
-    <Button>
+    {this.state.loading && <Loader />}
+    {!this.state.loading && this.state.error != null && <div className="error-message">Error: Pokémon not found.</div>}
+    {!this.state.loading && this.state.error == null && <>
+      <Button>
      <Link to="/">Home</Link>
     </Button>
     {!this.state.loading && (
@@ -111,7 +114,7 @@ class DetailsView extends DetailsController {
       </Grid>
      </Grid>
     )}
-    {this.state.loading && <Loader />}
+    </>}
    </Container>
   );
  }

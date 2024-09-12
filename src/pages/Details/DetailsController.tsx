@@ -4,8 +4,9 @@ export default class DetailsController extends React.Component {
  id = window.location.href.split("/")[4];
 
  state = {
-  details: {} as any[] | any,
+  details: {} as any,
   loading: true,
+  error: null
  };
 
  async fetchPokemonData() {
@@ -25,7 +26,10 @@ export default class DetailsController extends React.Component {
     };
    });
   } catch (error) {
-   console.log(error);
+    this.setState({
+    error: "Error: Pokémon not found.",
+    loading: false,
+    });
   }
  }
 
