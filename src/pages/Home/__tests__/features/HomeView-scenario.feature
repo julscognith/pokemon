@@ -14,3 +14,13 @@ Feature: Pokemon List Page
     Given I am on the Pokemon list page
     Then I should see a load more button
     Then I should see a list of Pokemon with name bulbasaur
+
+  Scenario: Successful Pokemon Search
+    Given I am on the Pokemon search page
+    When I enter "Pikachu" into the search field and click the search button
+    Then I should see a list of Pokemon that includes Pikachu
+
+  Scenario: No Results Found
+    Given I am on the Pokemon search page
+    When I enter "XYZ" into the search field and click the search button
+    Then I should see a message indicating "No results found"

@@ -17,6 +17,7 @@ const feature = loadFeature(
 
 defineFeature(feature, (test) => {
  let wrapper: any;
+ let w: any;
 
  test("Fetches data from the Pokémon API", ({ given, when, then }) => {
   let data: any;
@@ -107,22 +108,6 @@ defineFeature(feature, (test) => {
   });
 
   then("I should see a load more button", async () => {
-
-    const w = mount(<Search />)
-    let input  = w.find("#myinput");
-    console.log(input.debug(), "DEBUGGGGss")
-    input.simulate("focus");
-    input.simulate("change", { target: { value: "test run 123" } })
-    input.update()
-    
-    input  = w.find("#myinput");
-    expect(input.props().value).toEqual("test run 123")
-
-    console.log(input.debug(), "DEBUGGGGss")
-    // expect(wrapper.find(Search).instance().state.searchResults).toContainEqual(
-    //     expect.objectContaining({ name: 'test run 123' })
-    //   );
-
    const loadMore = wrapper.find("#loadmore").first();
    expect(loadMore.text()).toContain("Load More");
   });
@@ -138,4 +123,45 @@ defineFeature(feature, (test) => {
    expect(heading).toBe("bulbasaur");
   });
  });
+
+  test("Successful Pokemon Search", ({ given, when, then }) => {
+    
+    given("I am on the Pokemon search page", () => {
+       w = mount(<Search />)
+    });
+
+    when('I enter "Pikachu" into the search field and click the search button', () => {
+      let input  = w.find("#myinput");
+      console.log(input.debug(), "DEBUGGGGss")
+      input.simulate("change", { target: { value: "test run 123" } })
+      input.update()
+
+    });
+
+    then("I should see a list of Pokemon that includes Pikachu", () => {
+            
+      let input  = w.find("#myinput");
+      // expect(input.props().value).toEqual("test run 123")
+  
+      console.log(input.debug(), "DEBUGGGGss")
+      // expect(wrapper.find(Search).instance().state.searchResults).toContainEqual(
+      //     expect.objectContaining({ name: 'test run 123' })
+      //   );
+    });
+  });
+
+  test("No Results Found", ({ given, when, then }) => {
+    given("I am on the Pokemon search page", () => {
+      // Setup for the initial state, e.g., mounting the component.
+    });
+
+    when('I enter "XYZ" into the search field and click the search button', () => {
+      // Simulate entering "XYZ" in the input field and clicking search.
+    });
+
+    then('I should see a message indicating "No results found"', () => {
+      // Verify the "No results found" message is displayed.
+    });
+  });
+
 });

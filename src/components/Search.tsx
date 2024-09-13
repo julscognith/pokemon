@@ -19,6 +19,7 @@ interface Pokemon {
 interface SearchState {
  lists: Pokemon[];
  searchResults: Pokemon[];
+ search: string;
 }
 
 class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
@@ -30,6 +31,7 @@ class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
   this.state = {
    lists: [],
    searchResults: [],
+   search: ""
   };
 
   this.typingTimeout = undefined;
@@ -92,6 +94,10 @@ class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
   }, 1000);
  };
 
+ handleInputValueChange = (e:any) => {
+  this.setState({ search: e.target.value });
+ }
+
  render() {
   const { classes } = this.props;
 
@@ -126,6 +132,9 @@ class Search extends React.Component<WithStyles<typeof styles>, SearchState> {
        />
       )}
      />
+
+     <input type="text" id="myinput" value={this.state.search} onChange={this.handleInputValueChange} />
+     <p id="myinputdata">{this.state.search}</p>
    </Container>
   );
  }
