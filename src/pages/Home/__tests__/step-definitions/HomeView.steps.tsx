@@ -9,6 +9,8 @@ import PokemonCard from "../../../../components/PokemonCard";
 import { Autocomplete } from "@material-ui/lab";
 import { Search } from "../../../../components";
 
+import { act } from 'react-dom/test-utils';
+
 const mockedProps = {};
 
 const feature = loadFeature(
@@ -18,11 +20,10 @@ const feature = loadFeature(
 defineFeature(feature, (test) => {
  let wrapper: any;
  let searchWrapper: any;
+ let data: any;
+ let mockFetch: jest.Mock;
 
  test("Fetches data from the Pokémon API", ({ given, when, then }) => {
-  let data: any;
-  let mockFetch: jest.Mock;
-
   given("the Pokémon API returns a successful response", () => {
    const mockResponse = {
     ok: true,
@@ -31,12 +32,6 @@ defineFeature(feature, (test) => {
     headers: {
      get: () => "application/json",
     },
-    redirected: false,
-    type: "basic",
-    url: "",
-    clone: jest.fn(),
-    body: null,
-    bodyUsed: false,
     json: () =>
      Promise.resolve({
       results: [
@@ -44,10 +39,6 @@ defineFeature(feature, (test) => {
        { name: "ivysaur", id: "2" },
       ],
      }),
-    text: jest.fn(),
-    arrayBuffer: jest.fn(),
-    blob: jest.fn(),
-    formData: jest.fn(),
    };
    mockFetch = jest.fn(() => Promise.resolve(mockResponse as any));
    global.fetch = mockFetch;
@@ -110,6 +101,9 @@ defineFeature(feature, (test) => {
   then("I should see a load more button", async () => {
    const loadMore = wrapper.find("#loadmore").first();
    expect(loadMore.text()).toContain("Load More");
+
+   loadMore.simulate("click");
+   console.log(data)
   });
 
   then("I should see a list of Pokemon with name bulbasaur", () => {
@@ -124,43 +118,50 @@ defineFeature(feature, (test) => {
   });
  });
 
-  test("Successful Pokemon Search", ({ given, when, then }) => {
-    
-    given("I am on the Pokemon search page", () => {
-      searchWrapper = mount(<Search />)
-    });
+ const mockPokemonData = [
+  { name: "Bulbasaur", id: 1 },
+  { name: "Ivysaur", id: 2 },
+  { name: "Venusaur", id: 3 }
+];
 
-    when('I enter "Pikachu" into the search field and click the search button', () => {
-      let input  = searchWrapper.find("input");
-      console.log(input.debug(), "DEBUGGGGss")
-      input.simulate("change", { target: { value: "test run 123" } })
-      input.update()
-
-    });
-
-    then("I should see a list of Pokemon that includes Pikachu", () => {
-            
-      let input  = searchWrapper.find("input");
-      expect(input.props().value).toEqual("test run 123")
-  
-      console.log(input.debug(), "DEBUGGGGss")
-      // expect(wrapper.find(Search).instance().state.searchResults).toContainEqual(
-      //     expect.objectContaining({ name: 'test run 123' })
-      //   );
-    });
+test("Successful Pokemon Search", ({ given, when, then }) => {
+  given("I am on the Pokemon search page", () => {
+    searchWrapper = mount(<Search pokemonList={mockPokemonData} />);
   });
+
+  when('I enter "bulbasaur" into the search field', () => {
+    const input = searchWrapper.find('input');
+    input.simulate('change', { target: { value: 'bulbasaur' } });
+    searchWrapper.update();
+  });
+
+  then("I should see a list of Pokemon that includes Bulbasaur", async () => {
+    await act(async () => {
+      searchWrapper.find('input').simulate('focus');
+      
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      searchWrapper.update();
+    });
+
+    const input = searchWrapper.find('input');
+    expect(input.prop('value')).toEqual('bulbasaur');
+
+    // console.log(searchWrapper.debug());
+
+    // const results = searchWrapper.find('li'); 
+    // expect(results).toHaveLength(1);
+    // expect(results.at(0).text().toLowerCase()).toContain('bulbasaur');
+  });
+});
 
   test("No Results Found", ({ given, when, then }) => {
     given("I am on the Pokemon search page", () => {
-      // Setup for the initial state, e.g., mounting the component.
     });
 
     when('I enter "XYZ" into the search field and click the search button', () => {
-      // Simulate entering "XYZ" in the input field and clicking search.
     });
 
     then('I should see a message indicating "No results found"', () => {
-      // Verify the "No results found" message is displayed.
     });
   });
 

@@ -17,8 +17,8 @@ Feature: Pokemon List Page
 
   Scenario: Successful Pokemon Search
     Given I am on the Pokemon search page
-    When I enter "Pikachu" into the search field and click the search button
-    Then I should see a list of Pokemon that includes Pikachu
+    When I enter "bulbasaur" into the search field
+    Then I should see a list of Pokemon that includes Bulbasaur
 
   Scenario: No Results Found
     Given I am on the Pokemon search page

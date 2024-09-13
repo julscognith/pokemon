@@ -31,7 +31,7 @@ class Search extends React.Component<any, SearchState> {
     this.state = {
       lists: [],
       searchResults: [],
-      search: "",
+      search: "bulbasaur",
     };
 
     this.typingTimeout = undefined;
@@ -79,7 +79,7 @@ class Search extends React.Component<any, SearchState> {
         this.setState({ searchResults: this.state.lists });
       } else {
         const filteredResults = this.state.lists.filter((pokemon: Pokemon) =>
-          pokemon.name.toLowerCase().includes(value.toLowerCase())
+          pokemon.name.toLowerCase().includes(value.toLowerCase() || this.state.search)
         );
 
         if (filteredResults.length <= 0) {
@@ -104,13 +104,14 @@ class Search extends React.Component<any, SearchState> {
     return (
       <Container>
         <Autocomplete
-        style={{ margin: "20px auto", width: "70%" }}
+          style={{ margin: "20px auto", width: "70%" }}
           id="combo-box-demo"
           options={this.state.searchResults}
           getOptionLabel={(option: Pokemon) => option.name}
           onChange={this.handleRedirect}
           onInputChange={this.handleInputChange}
           filterOptions={(options) => options}
+          defaultValue={{ id: "1", name: this.state.search }} // added value prop
           renderOption={(option) => (
             <Link
               style={{
@@ -119,6 +120,7 @@ class Search extends React.Component<any, SearchState> {
                 textDecoration: "none",
                 color: "inherit",
               }}
+              data-test-id="list-item"
               to={`/pokemon/${option.name}`}
             >
               {option.name}
