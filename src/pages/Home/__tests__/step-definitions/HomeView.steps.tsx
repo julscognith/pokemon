@@ -17,7 +17,7 @@ const feature = loadFeature(
 
 defineFeature(feature, (test) => {
  let wrapper: any;
- let w: any;
+ let searchWrapper: any;
 
  test("Fetches data from the Pokémon API", ({ given, when, then }) => {
   let data: any;
@@ -127,11 +127,11 @@ defineFeature(feature, (test) => {
   test("Successful Pokemon Search", ({ given, when, then }) => {
     
     given("I am on the Pokemon search page", () => {
-       w = mount(<Search />)
+      searchWrapper = mount(<Search />)
     });
 
     when('I enter "Pikachu" into the search field and click the search button', () => {
-      let input  = w.find("#myinput");
+      let input  = searchWrapper.find("input");
       console.log(input.debug(), "DEBUGGGGss")
       input.simulate("change", { target: { value: "test run 123" } })
       input.update()
@@ -140,8 +140,8 @@ defineFeature(feature, (test) => {
 
     then("I should see a list of Pokemon that includes Pikachu", () => {
             
-      let input  = w.find("#myinput");
-      // expect(input.props().value).toEqual("test run 123")
+      let input  = searchWrapper.find("input");
+      expect(input.props().value).toEqual("test run 123")
   
       console.log(input.debug(), "DEBUGGGGss")
       // expect(wrapper.find(Search).instance().state.searchResults).toContainEqual(
